@@ -163,6 +163,34 @@ func main() {
 
 			},
 		},
+		{
+			Name:        "init",
+			Aliases:     []string{"i"},
+			Usage:       "Initialize the lab environment",
+			Description: "Initialize the lab environment",
+			Action: func(c *cli.Context) error {
+
+				cmd := exec.Command(tfPath, "init")
+
+				cmd.Stdin = os.Stdin
+				cmd.Stdout = os.Stdout
+				cmd.Stderr = os.Stderr
+
+				fmt.Printf("\n\n")
+				err = cmd.Start()
+				if err != nil {
+					return err
+				}
+				err = cmd.Wait()
+				if err != nil {
+					return err
+				}
+
+				cyan.Printf("\nOpenShift lab init completed.\n")
+				return nil
+
+			},
+		},
 	}
 
 	err = app.Run(os.Args)
