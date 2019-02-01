@@ -10,7 +10,8 @@ import (
 	"github.com/urfave/cli"
 )
 
-const appDescription = `CHANGEME`
+const appDescription = `ocplab-install is a tool to create an OpenShift cluster
+						using Terraform and Libvirt provider.`
 
 // Cluster holds the informations about the machines to provide
 type Cluster struct {
