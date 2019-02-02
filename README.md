@@ -16,17 +16,22 @@ $ sudo make install
 ### Usage
 Initialize the Terraform working directory:
 ```
-$ ocplab-setup init
+$ ocplab-install init
 ```
 
 Create the cluster nodes:
 ```
-$ ocplab-setup create
+$ ocplab-install create
+```
+
+To provide a custom source image path:
+```
+$ ocplab-install create --img /foo/bar
 ```
 
 To destroy all the resources:
 ```
-$ ocplab-setup destroy
+$ ocplab-install destroy
 ```
 
 ### TODO

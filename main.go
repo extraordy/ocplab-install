@@ -13,6 +13,11 @@ import (
 const appDescription = `ocplab-install is a tool to create an OpenShift cluster
 						using Terraform and Libvirt provider.`
 
+var (
+	sourceImage string
+	args        []string
+)
+
 // Cluster holds the informations about the machines to provide
 type Cluster struct {
 	masterCount int
@@ -61,6 +66,15 @@ func checkLibvirtPlugin() error {
 	return nil
 }
 
+// checkSourceImage is used to verify custom images paths
+func checkSourceImage(path string) error {
+	_, err := os.Stat(path)
+	if err != nil {
+		return fmt.Errorf("Error: the provided image could not be found")
+	}
+	return nil
+}
+
 func main() {
 
 	cyan := color.New(color.FgCyan)
@@ -89,6 +103,13 @@ func main() {
 			Aliases:     []string{"c"},
 			Usage:       "Create a new lab environment",
 			Description: "Create a new lab environment",
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:        "image, img",
+					Usage:       "Define custom image path",
+					Destination: &sourceImage,
+				},
+			},
 			Action: func(c *cli.Context) error {
 				cl := &Cluster{}
 
@@ -110,11 +131,21 @@ func main() {
 				workerStr := strconv.Itoa(cl.workerCount)
 				lbStr := strconv.Itoa(cl.lbCount)
 
-				cmd := exec.Command(tfPath, "apply", "-auto-approve",
+				args = append(args, "apply", "-auto-approve",
 					"-var", "master-count="+masterStr,
 					"-var", "infra-count="+infraStr,
 					"-var", "worker-count="+workerStr,
 					"-var", "lb-count="+lbStr)
+
+				if sourceImage != "" {
+					err = checkSourceImage(sourceImage)
+					if err != nil {
+						return err
+					}
+					args = append(args, "-var", "source-image="+sourceImage)
+				}
+
+				cmd := exec.Command(tfPath, args...)
 
 				cmd.Stdin = os.Stdin
 				cmd.Stdout = os.Stdout

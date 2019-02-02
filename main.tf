@@ -30,11 +30,11 @@ variable "lb-count" {
     default = 1
 }
 
-variable "source_image" {
+variable "source-image" {
     default = "/home/qemu/libvirt/default/rhel-server-7.6-x86_64-kvm.qcow2"
 }
 
-variable "disk0_size" {
+variable "disk0-size" {
     default = 10737418240
 }
 
@@ -63,7 +63,7 @@ resource "libvirt_network" "cluster_net" {
 resource "libvirt_volume" "os_image" {
     name = "os_image"
     pool = "default"
-    source = "${var.source_image}"
+    source = "${var.source-image}"
 }
 
 resource "libvirt_volume" "master-disk0" {
@@ -71,7 +71,7 @@ resource "libvirt_volume" "master-disk0" {
     name = "${format("ocplabm-%02d-disk0", count.index + 1)}"
     pool = "default"
     format = "qcow2"
-    size = "${var.disk0_size}"
+    size = "${var.disk0-size}"
     base_volume_id = "${libvirt_volume.os_image.id}"
 }
 
@@ -80,7 +80,7 @@ resource "libvirt_volume" "infra-disk0" {
     name = "${format("ocplabi-%02d-disk0", count.index + 1)}"
     pool = "default"
     format = "qcow2"
-    size = "${var.disk0_size}"
+    size = "${var.disk0-size}"
     base_volume_id = "${libvirt_volume.os_image.id}"
 }
 
@@ -90,7 +90,7 @@ resource "libvirt_volume" "worker-disk0" {
     name = "${format("ocplabw-%02d-disk0", count.index + 1)}"
     pool = "default"
     format = "qcow2"
-    size = "${var.disk0_size}"
+    size = "${var.disk0-size}"
     base_volume_id = "${libvirt_volume.os_image.id}"
 }
 
@@ -99,7 +99,7 @@ resource "libvirt_volume" "lb-disk0" {
     name = "${format("ocplablb-%02d-disk0", count.index + 1)}"
     pool = "default"
     format = "qcow2"
-    size = "${var.disk0_size}"
+    size = "${var.disk0-size}"
     base_volume_id = "${libvirt_volume.os_image.id}"
 }
 
