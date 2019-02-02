@@ -16,10 +16,13 @@ type Cluster struct {
 // verifyClusterSize tests if the minimal cluster size is fulfilled
 func (c *Cluster) VerifyClusterSize() error {
 	if c.MasterCount == 0 {
-		return fmt.Errorf("Error: The number of master nodes must be at least 1.")
+		return fmt.Errorf("Error: The number of master nodes must be at least 1 to correctly deploy the control plane.")
 	}
-	if c.InfraCount == 0 {
-		return fmt.Errorf("Error: The number of infra nodes must be at least 1.")
+	if c.MasterCount != 0 && (c.MasterCount%2 != 1) {
+		return fmt.Errorf("Error: The master nodes count must always be an odd number.")
+	}
+	if c.InfraCount == 0 && c.MasterCount != 1 && c.WorkerCount != 0 {
+		return fmt.Errorf("Error: The number of infra nodes must be at least 1, with the exception of allinone setups (1 master, 0 infra, 0 workers).")
 	}
 	return nil
 }
