@@ -11,6 +11,26 @@ system.
 The [**Libvirt provider**](https://github.com/dmacvicar/terraform-provider-libvirt)
 must be installed in the system.
 
+#### Install Livvirt
+To run the cluster **livbirt** and **qemu-kvm** must be installed:
+```
+$ sudo yum install libvirt libvirt-devel libvirt-daemon-kvm qemu-kvm
+$ sudo systemctl enable --now libvirtd
+```
+
+To use libvirt as a non-root user: one option is to grant it to all users in the 
+**wheel** group by doing the following:
+```sh
+cat <<EOF >> /etc/polkit-1/rules.d/80-libvirt.rules
+polkit.addRule(function(action, subject) {
+  if (action.id == "org.libvirt.unix.manage" && subject.local && subject.active && subject.isInGroup("wheel")) {
+      return polkit.Result.YES;
+  }
+});
+EOF
+```
+
+#### Images
 The cluster is built upon customized RHEL7 images with enabled root access (safe
 for test labs only) and cloud-init removed. Future releases will provide a 
 custom cloud-init configuration.
