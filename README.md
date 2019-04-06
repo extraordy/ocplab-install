@@ -66,6 +66,11 @@ Initialize the Terraform working directory:
 $ ocplab-install init
 ```
 
+To pass a custom init path:
+```
+$ ocplab-install init --path /path/to/dir
+```
+
 Create the cluster nodes:
 ```
 $ ocplab-install create
